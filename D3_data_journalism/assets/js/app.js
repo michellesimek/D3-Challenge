@@ -39,13 +39,13 @@ d3.csv("assets/data/data.csv").then(data => {
     
     data.forEach(data => {
       data.poverty = +data.poverty;
-      data.healthcareLow = +data.healthcareLow;
-      data.abbr = +data.abbr;
+      data.healthcare = +data.healthcare;
+      // data.state = +data.state;
         // let domain = d3.extent(data)
         // console.log(domain)
 
         console.log(data.poverty);
-        console.log(data.healthcareLow);
+        console.log(data.healthcare);
         console.log(data.abbr);
     })
 
@@ -55,7 +55,7 @@ d3.csv("assets/data/data.csv").then(data => {
       .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.healthcareLow)])
+      .domain([0, d3.max(data, d => d.healthcare)])
       .range([height,0]);
 
     // create axes
@@ -76,7 +76,7 @@ d3.csv("assets/data/data.csv").then(data => {
       .enter()
       .append("circle")
       .attr("cx", d => xLinearScale(d.poverty))
-      .attr("cy", d => yLinearScale(d.healthcareLow))
+      .attr("cy", d => yLinearScale(d.healthcare))
       .attr("r", "15")
       .attr("fill", "blue")
       .attr("opacity", "0.25")
@@ -84,9 +84,11 @@ d3.csv("assets/data/data.csv").then(data => {
       .attr("stroke", "black");
 
     /* Create the text for each block */
-    // circlesGroup.append("text")
-    //   .text(data => {return data.abbr})
-    // });
+    var circleLabels = chartGroup.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("text")
+      .text(data => {return data.state});
 
      // Create axes labels
      chartGroup.append("text")
@@ -95,12 +97,12 @@ d3.csv("assets/data/data.csv").then(data => {
      .attr("x", 0 - (height / 1.5))
      .attr("dy", "1em")
      .attr("class", "axisText")
-     .text("Lacks HealthCare");
+     .text("Lacks HealthCare (%) ");
 
     chartGroup.append("text")
      .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
      .attr("class", "axisText")
-     .text("Poverty");
+     .text("In Poverty (%)");
 
   }).catch(function(error) {
     console.log(error);
